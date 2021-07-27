@@ -16,9 +16,10 @@ eth-p/vim-tmux
 
 ## Features
 
-- `:Wcmd [command...]` - Run a command on save.
-
-  This will run `[command...]` in the marked tmux pane whenever the current buffer is saved.
+- Command: `Wcmd [shell command...]`
+  Run a shell command on save.  
+  
+  Runs `[shell command...]` in the tmux pane that was marked when `Wcmd` was called.
 
 
 

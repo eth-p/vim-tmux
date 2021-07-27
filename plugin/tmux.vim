@@ -41,7 +41,13 @@ function s:RunOnSave(buffer, pane, command)
 	end
 
 	" Add.
-	let s:run_on_save[pane] = { 'buffer': buffer, 'command': a:command }
+	let s:run_on_save[pane] = 
+		\ {
+		\     'buffer': buffer, 
+		\     'cwd': getcwd(),
+		\     'command': a:command
+		\ }
+
 	echo "Bound command to tmux pane ".pane."."
 endfunction
 
@@ -50,10 +56,11 @@ function s:RunOnSaveDo(buffer, path)
 		let pane = hook[0]
 		let buffer = hook[1].buffer
 		let command = hook[1].command
+		let cwd = hook[1].cwd
 
 		if buffer == a:buffer
 			call tmux#Command('respawn-pane', '-k', '-t', pane,
-				\ "bash -c '\"$@\"; echo \"--- exit ($?) ---\"; trap \"exec \\\"\\$SHELL\\\"\" INT; while true; do sleep 60; done; \"$SHELL\" -l' -- ".command
+				\ "bash -c 'cd \"$1\" && \"${@:2}\"; echo \"--- exit ($?) ---\"; trap \"exec \\\"\\$SHELL\\\"\" INT; while true; do sleep 60; done; \"$SHELL\" -l' -- ".shellescape(cwd)." ".command
 				\ )
 		endif
 	endfor
