@@ -60,7 +60,7 @@ function s:RunOnSaveDo(buffer, path)
 
 		if buffer == a:buffer
 			call tmux#Command('respawn-pane', '-k', '-t', pane,
-				\ "bash -c 'cd \"$1\" && \"${@:2}\"; echo \"--- exit ($?) ---\"; trap \"exec \\\"\\$SHELL\\\"\" INT; while true; do sleep 60; done; \"$SHELL\" -l' -- ".shellescape(cwd)." ".command
+				\ "bash -c 'cd \"$1\" && \"${@:2}\"; echo \"--- exit ($?) ---\"; trap \"tmux respawn-pane -k -t \\\"$TMUX_PANE\\\" \\\"\\$SHELL\\\" -l\" INT; while true; do sleep 60; done;' -- ".shellescape(cwd)." ".command
 				\ )
 		endif
 	endfor
